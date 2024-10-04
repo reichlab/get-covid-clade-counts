@@ -16,27 +16,19 @@ To run the script manually:
 # /// script
 # requires-python = ">=3.11"
 # dependencies = [
-#   "virus_clade_utils@git+https://github.com/reichlab/virus-clade-utils/",
+#   "click",
+#   "virus_clade_utils@git+https://github.com/reichlab/virus-clade-utils@bsweger/sequence-by-state-date/50"
 # ]
 # ///
+
+# ⬆️ Tell uv to use a the latest feature branch of virus-clade-utils until everything is merged
 
 import click
 import os
 import logging
-from datetime import datetime, timedelta
-from pathlib import Path
 
-from virus_clade_utils.util.config import Config
-from virus_clade_utils.util.sequence import (
-    download_covid_genome_metadata,
-    filter_covid_genome_metadata,
-    get_clade_counts,
-    get_covid_genome_metadata,
-)
-from virus_clade_utils.util.session import get_session
-
-data_dir = "./data"
-os.makedirs(data_dir, exist_ok=True)
+from virus_clade_utils.cladetime import CladeTime  # type: ignore
+from virus_clade_utils.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
 
 # Log to stdout
 logger = logging.getLogger(__name__)
@@ -49,6 +41,10 @@ logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
 
+data_dir = "./data"
+os.makedirs(data_dir, exist_ok=True)
+
+
 @click.command()
 @click.option(
     "--as-of",
@@ -56,33 +52,24 @@ logger.setLevel(logging.INFO)
     required=False,
     help="Get counts based on the last available Nextstrain sequence metadata on or prior to this date (YYYY-MM-DD)",
 )
-def main(as_of: str = None):
+def main(as_of: str | None = None):
     """Get clade counts and save to S3 bucket."""
 
-    # sequence_date and reference_tree_as_of don't actually do anything here
-    # but are required for creating a Config instance (this is what needs a refactor)
-    # (the reason we're instantiating a config object is to get config.date_path)
-    sequence_date = reference_tree_as_of = datetime.now()
-    config = Config(sequence_date, reference_tree_as_of)
+    # Instaniate CladeTime object with specified as_of date
+    ct = CladeTime(sequence_as_of=as_of)
+    logger.info({
+        "msg": f"CladeTime object created with sequence of_of date = {ct.sequence_as_of}",
+        "nextstrain_metadata_url": ct.url_sequence_metadata,
+    })
 
-    bucket = Config.nextstrain_ncov_bucket
-    key = Config.nextstrain_genome_metadata_key
+    # get Polars LazyFrame to Nextstrain sequence metadata
+    lf_metadata = ct.sequence_metadata
 
-    session = get_session()
-    metadata = download_covid_genome_metadata(
-        session=session,
-        bucket=bucket,
-        key=key,
-        data_path=Path('metadata'),
-        as_of=as_of,
-        use_existing=True
-    )
-    logger.info("get_covid_genome_metadata")
-    lf_metadata = get_covid_genome_metadata(metadata)
     logger.info("filter_covid_genome_metadata")
     lf_metadata_filtered = filter_covid_genome_metadata(lf_metadata)
     logger.info("get_clade_counts")
     counts = get_clade_counts(lf_metadata_filtered)
+
     output_file = f"data/{as_of}_covid_clade_counts.parquet"
     logger.info("collect")
     cc = counts.collect()
