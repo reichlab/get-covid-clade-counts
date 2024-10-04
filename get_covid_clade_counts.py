@@ -33,10 +33,13 @@ from virus_clade_utils.util.sequence import (
     get_clade_counts,
     get_covid_genome_metadata,
 )
-from virus_clade_utils.util.session import get_session
+from virus_clade_utils.util.session import _get_session
 
 data_dir = "./data"
 os.makedirs(data_dir, exist_ok=True)
+
+metadata_dir = "./metadata"
+os.makedirs(metadata_dir, exist_ok=True)
 
 # Log to stdout
 logger = logging.getLogger(__name__)
@@ -68,12 +71,12 @@ def main(as_of: str = None):
     bucket = Config.nextstrain_ncov_bucket
     key = Config.nextstrain_genome_metadata_key
 
-    session = get_session()
+    session = _get_session()
     metadata = download_covid_genome_metadata(
         session=session,
         bucket=bucket,
         key=key,
-        data_path=Path('metadata'),
+        data_path=Path(metadata_dir),
         as_of=as_of,
         use_existing=True
     )
