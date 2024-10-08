@@ -3,7 +3,7 @@ Create a parquet file with clade counts by date and location and save it to an S
 
 This script wraps the virus-clade-utils package, which generates the clade counts using the
 GenBank-based Sars-CoV-2 sequence metadata from Nextstrain.
-https://github.com/reichlab/virus-clade-utils
+https://github.com/reichlab/cladetime
 
 The script is scheduled to run every Monday, for use in the modeling round that will open
 on the following Wednesday.
