@@ -68,7 +68,7 @@ def main(as_of: str | None = None):
     counts = get_clade_counts(lf_metadata_filtered)
 
     output_file = f"data/{as_of}_covid_clade_counts.parquet"
-    logger.info("collect")
+    logger.info("collecting clade counts")
     cc = counts.collect()
     logger.info("write_parquet")
     cc.write_parquet(output_file)
