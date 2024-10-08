@@ -53,7 +53,7 @@ os.makedirs(data_dir, exist_ok=True)
 def main(as_of: str | None = None):
     """Get clade counts and save to S3 bucket."""
 
-    # Instaniate CladeTime object with specified as_of date
+    # Instantiate CladeTime object with specified as_of date
     ct = CladeTime(sequence_as_of=as_of)
     logger.info({
         "msg": f"CladeTime object created with sequence of_of date = {ct.sequence_as_of}",
