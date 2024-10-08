@@ -17,11 +17,9 @@ To run the script manually:
 # requires-python = ">=3.11"
 # dependencies = [
 #   "click",
-#   "virus_clade_utils@git+https://github.com/reichlab/virus-clade-utils@bsweger/sequence-by-state-date/50"
+#   "virus_clade_utils@git+https://github.com/reichlab/virus-clade-utils"
 # ]
 # ///
-
-# ⬆️ Tell uv to use a the latest feature branch of virus-clade-utils until everything is merged
 
 import click
 import os
