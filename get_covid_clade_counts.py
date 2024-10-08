@@ -26,7 +26,7 @@ from pathlib import Path
 import logging
 
 from cladetime import CladeTime  # type: ignore
-from virus_clade_utils.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
+from cladetime.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
 
 # Log to stdout
 logger = logging.getLogger(__name__)
@@ -69,7 +69,7 @@ def main(as_of: str | None = None):
 
     output_file = f"data/{as_of}_covid_clade_counts.parquet"
     logger.info("collecting clade counts")
-    cc = counts.collect()
+    cc = counts.collect(streaming=True)
     logger.info("write_parquet")
     cc.write_parquet(output_file)
 
