@@ -17,7 +17,7 @@ To run the script manually:
 # requires-python = ">=3.11"
 # dependencies = [
 #   "click",
-#   "virus_clade_utils@git+https://github.com/reichlab/virus-clade-utils"
+#   "cladetime@git+https://github.com/reichlab/cladetime"
 # ]
 # ///
 
