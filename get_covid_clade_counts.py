@@ -25,7 +25,7 @@ import click
 import os
 import logging
 
-from virus_clade_utils.cladetime import CladeTime  # type: ignore
+from cladetime import CladeTime  # type: ignore
 from virus_clade_utils.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
 
 # Log to stdout
