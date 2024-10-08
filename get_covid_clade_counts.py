@@ -38,6 +38,7 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
+# set up data directory
 data_dir = Path("./data")
 data_dir.mkdir(exist_ok=True)
 
