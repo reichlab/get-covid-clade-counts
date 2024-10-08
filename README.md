@@ -1,5 +1,5 @@
 # get-covid-clade-counts
-Create virus clade count data in parquet format (eventually: and save to an S3 Bucket) using functionality from virus-clade-utils.
+Create virus clade count data in parquet format (eventually: and save to an S3 Bucket) using functionality from cladetime.
 
 # Usage
 
