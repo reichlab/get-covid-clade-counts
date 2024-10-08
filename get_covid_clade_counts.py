@@ -22,7 +22,7 @@ To run the script manually:
 # ///
 
 import click
-import os
+from pathlib import Path
 import logging
 
 from cladetime import CladeTime  # type: ignore
@@ -38,10 +38,8 @@ handler.setFormatter(formatter)
 logger.addHandler(handler)
 logger.setLevel(logging.INFO)
 
-
-data_dir = "./data"
-os.makedirs(data_dir, exist_ok=True)
-
+data_dir = Path("./data")
+data_dir.mkdir(exist_ok=True)
 
 @click.command()
 @click.option(
