@@ -1,7 +1,7 @@
 """
 Create a parquet file with clade counts by date and location and save it to an S3 bucket.
 
-This script wraps the virus-clade-utils package, which generates the clade counts using the
+This script wraps the cladetime package, which generates the clade counts using the
 GenBank-based Sars-CoV-2 sequence metadata from Nextstrain.
 https://github.com/reichlab/cladetime
 
