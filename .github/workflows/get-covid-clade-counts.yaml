@@ -1,9 +1,7 @@
-name: Upload hub data to a hubverse-hosted AWS S3 bucket
+name: Get covid clade counts and upload them to the AWS S3 bucket
 
 on:
-  push:
-    branches:
-      - main
+  workflow_dispatch:
 
 env:
   # Hubverse AWS account number
