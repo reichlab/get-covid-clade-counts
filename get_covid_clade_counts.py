@@ -17,7 +17,8 @@ To run the script manually:
 # requires-python = ">=3.11"
 # dependencies = [
 #   "click",
-#   "cladetime@git+https://github.com/reichlab/cladetime"
+#   "cladetime@git+https://github.com/reichlab/cladetime",
+#   "pyarrow==16.0.0",
 # ]
 # ///
 
