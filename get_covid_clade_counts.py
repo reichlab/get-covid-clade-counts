@@ -24,6 +24,7 @@ To run the script manually:
 import click
 from pathlib import Path
 import logging
+from datetime import datetime, timedelta
 
 from cladetime import CladeTime  # type: ignore
 from cladetime.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
@@ -52,8 +53,10 @@ data_dir.mkdir(exist_ok=True)
 def main(as_of: str | None = None):
     """Get clade counts and save to S3 bucket."""
 
-    # Instantiate CladeTime object with specified as_of date
-    ct = CladeTime(sequence_as_of=as_of)
+    # Instantiate CladeTime object
+    # Pending CladeTime update, we tell CladeTime to use the specified as_of date + 1 day
+    # This ensures that any updates made on the specified as_of date are captured
+    ct = CladeTime(sequence_as_of=datetime.strptime(as_of, "%Y-%m-%d") + timedelta(1))
     logger.info({
         "msg": f"CladeTime object created with sequence of_of date = {ct.sequence_as_of}",
         "nextstrain_metadata_url": ct.url_sequence_metadata,
