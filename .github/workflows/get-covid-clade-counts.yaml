@@ -1,6 +1,8 @@
 name: Get covid clade counts and upload them to the AWS S3 bucket
 
 on:
+  schedule:
+    - cron: "37 04 * * 1" # 4:37 AM UTC every Mon
   workflow_dispatch:
 
 env:
