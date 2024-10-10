@@ -1,0 +1,52 @@
+name: Get covid clade counts and upload them to the AWS S3 bucket
+
+on:
+  workflow_dispatch:
+
+env:
+  # Hubverse AWS account number
+  AWS_ACCOUNT: 312560106906
+
+permissions:
+  contents: read
+  # id-token write required for AWS auth
+  id-token: write
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+
+    - name: Configure AWS credentials
+      # request credentials to assume the hub's AWS role via OpenID Connect
+      uses: aws-actions/configure-aws-credentials@v4
+      with:
+        role-to-assume: arn:aws:iam::312560106906:role/covid-clade-counts-action
+        aws-region: us-east-1
+
+    - name: Install uv 🐍
+      uses: astral-sh/setup-uv@v2
+      with:
+        version: "0.4.9"
+        enable-cache: true
+
+    - name: Install rclone
+      run: |
+        curl https://rclone.org/install.sh | sudo bash
+        rclone version
+
+    - name: Get covid clade counts
+      run: |
+        uv run get_covid_clade_counts.py
+
+    - name: Sync to cloud storage
+      # sync specified hub directories to S3
+      # (to exclude a directory, remove it from the hub_directories list below)
+      if: env.CLOUD_ENABLED == 'true'
+      run: |
+        rclone sync ./data/ ":s3,provider=AWS,env_auth:covid-clade-counts" \
+          --checksum --verbose --stats-one-line --config=/dev/null
+      shell: bash
