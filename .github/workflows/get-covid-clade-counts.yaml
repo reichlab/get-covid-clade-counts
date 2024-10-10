@@ -35,17 +35,16 @@ jobs:
 
     - name: Get covid clade counts
       run: |
-        uv run get_covid_clade_counts.py
+        uv run get_covid_clade_counts.py --as-of=$(date +'%Y-%m-%d')
 
     - name: Install rclone
       run: |
         curl https://rclone.org/install.sh | sudo bash
         rclone version
 
-    - name: Sync to cloud storage
-      # sync specified hub directories to S3
-      # (to exclude a directory, remove it from the hub_directories list below)
+    - name: Copy to cloud storage
+      # copy the created file to S3
       run: |
-        rclone sync ./data/ ":s3,provider=AWS,env_auth:covid-clade-counts" \
+        rclone copy ./data/ ":s3,provider=AWS,env_auth:covid-clade-counts" \
           --checksum --verbose --stats-one-line --config=/dev/null
       shell: bash
