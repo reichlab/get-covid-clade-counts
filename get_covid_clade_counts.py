@@ -24,7 +24,7 @@ To run the script manually:
 import click
 from pathlib import Path
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 from cladetime import CladeTime  # type: ignore
 from cladetime.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
@@ -52,11 +52,21 @@ data_dir.mkdir(exist_ok=True)
 )
 def main(as_of: str | None = None):
     """Get clade counts and save to S3 bucket."""
+    utc_now = datetime.now(tz=timezone.utc)
+    utc_now_date = utc_now.date()
+    if as_of is None or as_of == str(utc_now_date):
+        # as_of not provided or is today
+        as_of_datetime = utc_now
+        as_of = str(utc_now_date)
+    elif as_of > str(utc_now_date):
+        raise ValueError('as_of is in the future!')
+    else:
+        # as_of is not today
+        as_of_datetime = datetime.strptime(as_of, "%Y-%m-%d") \
+            + timedelta(hours = 23, minutes = 59, seconds = 59)
 
     # Instantiate CladeTime object
-    # Pending CladeTime update, we tell CladeTime to use the specified as_of date + 1 day
-    # This ensures that any updates made on the specified as_of date are captured
-    ct = CladeTime(sequence_as_of=datetime.strptime(as_of, "%Y-%m-%d") + timedelta(1))
+    ct = CladeTime(sequence_as_of=as_of_datetime)
     logger.info({
         "msg": f"CladeTime object created with sequence as_of date = {ct.sequence_as_of}",
         "nextstrain_metadata_url": ct.url_sequence_metadata,
