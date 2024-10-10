@@ -58,7 +58,7 @@ def main(as_of: str | None = None):
     # This ensures that any updates made on the specified as_of date are captured
     ct = CladeTime(sequence_as_of=datetime.strptime(as_of, "%Y-%m-%d") + timedelta(1))
     logger.info({
-        "msg": f"CladeTime object created with sequence of_of date = {ct.sequence_as_of}",
+        "msg": f"CladeTime object created with sequence as_of date = {ct.sequence_as_of}",
         "nextstrain_metadata_url": ct.url_sequence_metadata,
     })
 
