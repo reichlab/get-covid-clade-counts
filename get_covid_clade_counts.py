@@ -14,7 +14,7 @@ To run the script manually:
 """
 
 # /// script
-# requires-python = ">=3.11"
+# requires-python = "==3.12"
 # dependencies = [
 #   "click",
 #   "cladetime@git+https://github.com/reichlab/cladetime",
