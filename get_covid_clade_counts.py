@@ -26,8 +26,7 @@ from pathlib import Path
 import logging
 from datetime import datetime, timedelta, timezone
 
-from cladetime import CladeTime  # type: ignore
-from cladetime.util.sequence import filter_covid_genome_metadata, get_clade_counts  # type: ignore
+from cladetime import CladeTime, sequence  # type: ignore
 
 # Log to stdout
 logger = logging.getLogger(__name__)
@@ -75,10 +74,11 @@ def main(as_of: str | None = None):
     # get Polars LazyFrame to Nextstrain sequence metadata
     lf_metadata = ct.sequence_metadata
 
-    logger.info("filter_covid_genome_metadata")
-    lf_metadata_filtered = filter_covid_genome_metadata(lf_metadata)
+    logger.info("filter_metadata")
+    lf_metadata_filtered = sequence.filter_metadata(lf_metadata)
     logger.info("get_clade_counts")
-    counts = get_clade_counts(lf_metadata_filtered)
+    counts = sequence.summarize_clades(lf_metadata_filtered, group_by=["clade", "date", "location"])
+
 
     output_file = f"data/{as_of}_covid_clade_counts.parquet"
     logger.info("collecting clade counts")
