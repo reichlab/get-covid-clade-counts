@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "37 04 * * 1" # 4:37 AM UTC every Mon
   workflow_dispatch:
+    inputs:
+      as_of:
+        description: "Get clade counts as of 11:59 UTC on this date (YYYY-MM-DD)"
+        required: true
+        default: $(date +'%Y-%m-%d')
 
 env:
   # Hubverse AWS account number
@@ -19,6 +24,17 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+
+    - name: Get --as-of date 🕰️
+      run: |
+        if [[ ${{ github.event_name == 'workflow_dispatch' }} == true ]]; then
+          AS_OF=${{ inputs.as_of }}
+        else
+          AS_OF=$(date +'%Y-%m-%d')
+        fi
+        echo "as_of date is set to $AS_OF"
+        echo "AS_OF=$AS_OF" >> $GITHUB_ENV
+
     - name: Checkout
       uses: actions/checkout@v4
 
@@ -37,7 +53,7 @@ jobs:
 
     - name: Get covid clade counts
       run: |
-        uv run get_covid_clade_counts.py --as-of=$(date +'%Y-%m-%d')
+        uv run get_covid_clade_counts.py --as-of="$AS_OF"
 
     - name: Install rclone
       run: |
