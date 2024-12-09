@@ -74,6 +74,9 @@ def main(as_of: str | None = None):
     # get Polars LazyFrame to Nextstrain sequence metadata
     lf_metadata = ct.sequence_metadata
 
+    logger.info("collect metadata")
+    lf_metadata = lf_metadata.collect()
+
     logger.info("filter_metadata")
     lf_metadata_filtered = sequence.filter_metadata(lf_metadata)
     logger.info("get_clade_counts")
@@ -81,10 +84,8 @@ def main(as_of: str | None = None):
 
 
     output_file = f"data/{as_of}_covid_clade_counts.parquet"
-    logger.info("collecting clade counts")
-    cc = counts.collect(streaming=True)
     logger.info("write_parquet")
-    cc.write_parquet(output_file)
+    counts.write_parquet(output_file)
 
     logger.info(f"Clade outputs saved: {output_file}")
 
