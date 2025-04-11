@@ -11,7 +11,7 @@ on:
         default: $(date +'%Y-%m-%d')
 
 env:
-  # Hubverse AWS account number
+  # Reich Lab AWS account number
   AWS_ACCOUNT: 312560106906
 
 permissions:
